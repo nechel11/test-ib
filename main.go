@@ -68,7 +68,7 @@ func add_to_channel(s *storage, key, value string){
 	tmp <- value
 }
 
-func Make_storage() *storage{
+func make_storage() *storage{
 
 	var s storage
 
@@ -76,7 +76,7 @@ func Make_storage() *storage{
 	return &s
 }
 
-func Method_separator(w http.ResponseWriter, r *http.Request, s *storage){
+func method_separator(w http.ResponseWriter, r *http.Request, s *storage){
 
 	if r.Method == "PUT"{
 		s.put_handler(w,r)
@@ -89,10 +89,10 @@ func Method_separator(w http.ResponseWriter, r *http.Request, s *storage){
 
 func handlefunc(port string){
 
-	s := Make_storage()
+	s := make_storage()
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    		Method_separator(w, r, s)
+    		method_separator(w, r, s)
 		})
 	http.ListenAndServe("127.0.0.1:"+port, nil)
 
