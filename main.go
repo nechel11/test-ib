@@ -24,7 +24,9 @@ func (s *storage) put_handler(w http.ResponseWriter, r *http.Request){
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	s.Lock()
 	if_channels_exists(s, key)
+	s.Unlock()
 	go add_to_channel(s, key, value)
 }
 
@@ -34,7 +36,7 @@ func (s *storage) get_handler(w http.ResponseWriter, r *http.Request){
 	var timeout int
 	timeout_string := r.URL.Query().Get("timeout")
 
-	if timeout_string!= ""{
+	if timeout_string != ""{
 		var err error
 		timeout, err = strconv.Atoi(timeout_string)
 		if err != nil {
@@ -43,8 +45,10 @@ func (s *storage) get_handler(w http.ResponseWriter, r *http.Request){
 		}
 	}
 
+	s.Lock()
 	if_channels_exists(s, key)
 	tmp := s.collector[key]
+	s.Unlock()
 
 	select {
 		case msg := <- tmp:
